@@ -182,7 +182,7 @@ def showProducts(): #ProductTable
     columnConstructor('Link_sản_phẩm','Link sản phẩm',300)
     contacts = []
     for i in range(0,len(productList)):
-        contacts.append((i+1,productList[i].name,productList[i].minPrice,productList[i].maxPrice,productList[i].sales,productList[i].rating,productList[i].link))
+        contacts.append((i+1,productList[i].name,productList[i].minPrice,productList[i].maxPrice,productList[i].sales,'%.1f'%productList[i].rating,productList[i].link))
     productTree.tag_configure('oddrow',background="#7DE5ED")
     productTree.tag_configure('evenrow',background="white")
     count =0
