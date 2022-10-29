@@ -1,8 +1,12 @@
+from tkinter import messagebox
+from tkinter import ttk
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import time
 import csv
 from Product import Product
+import tkinter as tk
+from tkinter import BOTH, CENTER, END, LEFT, RIGHT, Y, Frame, Label, Listbox, Scrollbar, Toplevel, ttk
 PATH = r'C:\Program Files (x86)\Chromedriver\chromedriver.exe' #link to chromedriver app in your pc
 
 def getPosition(root):
@@ -31,26 +35,22 @@ def getHtml(url):  # get source code of web
     driver = webdriver.Chrome(executable_path=PATH)
     driver.get(url)
     driver.execute_script("""
-    var myFunc01 = function() {
-    let scroll = window.scrollBy({top: scroll, left: 0, behavior: 'smooth'});
-    var i = 0;
-    while (i < 100) {
-        (function(i) {
-            setTimeout(function() {
-                window.scrollBy({top: scroll, left: 0, behavior: 'smooth'});
-            }, 1000 * i)
-        })(i++)
-    }
-    };
-
-myFunc01();
+        var scroll = document.body.scrollHeight / 2;
+        var i = 0;
+        function scrollit(i) {
+           window.scrollBy({top: scroll, left: 0, behavior: 'smooth'});
+           i++;
+           if (i < 20) {
+               setTimeout(scrollit, 300, i);
+           }
+        }
+        scrollit(i);
     """)
-    # for i in range(25):
-    #     driver.execute_script("document.body.scrollTo(0, 350);")
+
     # the script above for auto scroll in order to display all items which are written by js
-    time.sleep(5)
+    time.sleep(8)
     html = driver.page_source
-    # driver.close()
+    driver.close()
     soup = BeautifulSoup(html, 'lxml')
     return soup
 
@@ -106,10 +106,8 @@ def writeToFile(name):
 
 
 def accessToShopee(searched_product):
-    fillProductList(searched_product)
-    for product in productList:
-        # myList.insert(END, product.__str__())
-        print(product)
-
-
-
+    if len(searched_product) == 0:
+        messagebox.showerror("Warning", "Bạn chưa nhập tên sản phẩm")
+    else:
+        fillProductList(searched_product)
+    
