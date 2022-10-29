@@ -1,8 +1,6 @@
-from this import d
 from tkinter import messagebox
 from tkinter import ttk
 from bs4 import BeautifulSoup
-from nbformat import write
 from selenium import webdriver
 import webbrowser
 import time
@@ -166,7 +164,7 @@ def showProducts(): #ProductTable
     scrollbar = ttk.Scrollbar(table,orient=tk.VERTICAL,command=productTree.yview)
     productTree.configure(yscroll =scrollbar.set)
     scrollbar.grid(row=0, column=1, sticky='ns')
-def showProducts(s): #ProductTable
+def showProducts(): #ProductTable
     table = Toplevel()
     table.geometry("1200x424")
     # Construct Treeview  
