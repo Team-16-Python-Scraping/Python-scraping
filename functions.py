@@ -2,6 +2,7 @@ from tkinter import messagebox
 from tkinter import ttk
 from bs4 import BeautifulSoup
 from selenium import webdriver
+import webbrowser
 import time
 import csv
 from Product import Product
@@ -103,11 +104,66 @@ def writeToFile(name):
         writer.writerows(productList)
     finally:
         csvFile.close()
+def showProducts(s): #ProductTable
+    table = Toplevel()
+    table.geometry("1200x424")
+    # Construct Treeview  
+    columns = ['S_T_T','Tên_sản_phẩm','Giá_nhỏ_nhất','Giá_lớn_nhất','Đã_bán','Sao_đánh_giá','Link_sản_phẩm']
+    productTree = ttk.Treeview(table,columns = columns,show = 'headings',cursor="hand2 orange")
+    def columnConstructor(cl,text,w):
+        productTree.heading(cl,text=text)
+        productTree.column(cl,width=w,anchor=CENTER)
+    columnConstructor('S_T_T','STT',50)
+    columnConstructor('Tên_sản_phẩm','Tên sản phẩm',210)
+    columnConstructor('Giá_nhỏ_nhất','Giá nhỏ nhất',100)
+    columnConstructor('Giá_lớn_nhất','Giá lớn nhất',100)
+    columnConstructor('Đã_bán','Đã bán',80)
+    columnConstructor('Sao_đánh_giá','Sao đánh giá',100)
+    columnConstructor('Link_sản_phẩm','Link sản phẩm',300)
+    contacts = []
+    for i in range(0,len(productList)):
+        contacts.append((i+1,productList[i].name,productList[i].minPrice,productList[i].maxPrice,productList[i].sales,productList[i].rating,productList[i].link))
+    productTree.tag_configure('oddrow',background="#7DE5ED")
+    productTree.tag_configure('evenrow',background="white")
+    count =0
+    for contact in contacts:
+        if(count%2==0):
+            productTree.insert('',tk.END,values=contact,tags="oddrow")
+        else:
+            productTree.insert('',tk.END,values=contact,tags="evenrow")
+        count+=1
+    s2= ttk.Style()
+    s2.theme_use("default")
+    s2.configure('Treeview.Heading',background ="orange",bd =1)
+    s2.configure('Treeview',rowheight =40,border =1)
+    s2.map('Treeview',background=[('selected','orange')],)
+    #Access to link of selected product
+    def goLink(event):
+        input_id = productTree.selection()
+        input_item = productTree.set(input_id,column="Link_sản_phẩm")
+        webbrowser.open('{}'.format(input_item))
+    productTree.bind("<Double-1>",goLink)
+    productTree.grid(row=0, column=0, sticky='nsew')
+    #Scrollbar
+    scrollbar = ttk.Scrollbar(table,orient=tk.VERTICAL,command=productTree.yview)
+    productTree.configure(yscroll =scrollbar.set)
+    scrollbar.grid(row=0, column=1, sticky='ns')
 
-
+    #Set Selections
+    selections = tk.Frame(table,relief="solid")
+    selections.place(x=980,y=60,height= 285,width=200)
+    btn_sortPrice = tk.Button(selections,text="Sắp xếp theo giá tăng dần",pady=10,fg="white",bg="black",cursor="hand2")
+    btn_sortPriceReverse = tk.Button(selections,text="Sắp xếp theo giá giảm dần",pady=10,fg="white",bg="black",cursor="hand2")
+    btn_sortRate = tk.Button(selections,text="Sắp xếp theo rate giảm dần",pady=10,fg="white",bg="black",cursor="hand2" )
+    btn_sortName = tk.Button(selections,text="Sắp xếp theo tên sản phẩm",pady=10,fg="white",bg="black",cursor="hand2")
+    btn_sortPrice.pack(pady=10)
+    btn_sortPriceReverse.pack(pady=10) 
+    btn_sortRate.pack(pady=10) 
+    btn_sortName.pack(pady=10)
 def accessToShopee(searched_product):
     if len(searched_product) == 0:
         messagebox.showerror("Warning", "Bạn chưa nhập tên sản phẩm")
     else:
         fillProductList(searched_product)
+        showProducts(searched_product)
     
