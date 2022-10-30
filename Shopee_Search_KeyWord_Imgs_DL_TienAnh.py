@@ -46,6 +46,11 @@ def get_url(url):
             urls.append(img_url)
     return urls'''
 
+def change_file_name():
+    path = 'imgs'
+    files = os.listdir(path)
+    for index, file in enumerate(files):
+        os.rename(os.path.join(path, file), os.path.join(path, ''.join([str(index), '.jpg'])))
 
 def download(url, pathname):    #tải file ảnh với url vừa lấy được và đặt vào thư mục tự đặt tên
     if not os.path.isdir(pathname): # nếu không có directory của folder thì tạo
@@ -64,6 +69,7 @@ def main(url, path):
     imgs = get_url(url)  # lấy url ảnh
     for img in imgs:
         download(img, path) # tải ảnh với mỗi url
+    change_file_name()
 
 
 main(driver.get('https://shopee.com/search?keyword=laptop'), 'imgs')
