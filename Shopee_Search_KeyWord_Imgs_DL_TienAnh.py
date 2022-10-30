@@ -13,7 +13,7 @@ def is_valid(url):  # check valid url
     parsed = urlparse(url)
     return bool(parsed.netloc) and bool(parsed.scheme)
 
-def get_url(url):
+def get_url(url):   # get link ảnh vào urls = []
     urls = []
     time.sleep(5)
     for i in range(10):
